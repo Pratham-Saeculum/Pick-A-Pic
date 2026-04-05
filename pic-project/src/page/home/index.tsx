@@ -31,7 +31,7 @@ const Home = () => {
     "Cars",
   ];
 
-  const skeletonArray = Array.from({ length: 10 });
+  const skeletonArray = Array.from({ length: 20 });
 
   const fetchImages = async (searchQuery?: string, pageNum = 1) => {
     try {
