@@ -12,6 +12,7 @@ const Home = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const [activeCategory, setActiveCategory] = useState("");
+  const [currentSearch, setCurrentSearch] = useState("");
 
   const navigate = useNavigate();
   const apiKey = import.meta.env.VITE_PIXABAY_API_KEY;
@@ -58,35 +59,34 @@ const Home = () => {
     fetchImages("", 1);
   }, []);
 
-  const handleSearch = () => {
-    if (!query.trim()) return;
+const handleSearch = () => {
+  if (!query.trim()) return;
 
-    setPage(1);
-    setActiveCategory("");
-    fetchImages(query, 1);
-  };
-  const handleCategoryClick = (category: string) => {
-    setActiveCategory(category);
-    setPage(1);
-    fetchImages(category, 1);
-  };
-
-const handleNext = () => {
-  const searchValue = query || activeCategory;
-  if (!searchValue.trim()) return;
-
-  const next = page + 1;
-  setPage(next);
-  fetchImages(searchValue, next);
+  setPage(1);
+  setActiveCategory("");
+  setCurrentSearch(query); // 🔥 important
+  fetchImages(query, 1);
+};
+const handleCategoryClick = (category: string) => {
+  setActiveCategory(category);
+  setPage(1);
+  setCurrentSearch(category); // 🔥 important
+  fetchImages(category, 1);
 };
 
-const handlePrev = () => {
-  const searchValue = query || activeCategory;
-  if (page === 1 || !searchValue.trim()) return;
+const handleNext = () => {
+  const next = page + 1;
+  setPage(next);
+  fetchImages(currentSearch, next); // empty string = fetch trending
+};
 
+
+
+const handlePrev = () => {
+  if (page === 1) return;
   const prev = page - 1;
   setPage(prev);
-  fetchImages(searchValue, prev);
+  fetchImages(currentSearch, prev);
 };
   return (
     <div className="min-h-screen bg-[#0f172a]">
