@@ -24,7 +24,6 @@ const Detail = () => {
     );
   }
 
-  // 🔥 File size
   useEffect(() => {
     const getFileSize = async () => {
       try {
@@ -47,7 +46,6 @@ const Detail = () => {
     getFileSize();
   }, [image]);
 
-  // 🔥 Download
   const handleDownload = async () => {
     const res = await fetch(image.largeImageURL);
     const blob = await res.blob();

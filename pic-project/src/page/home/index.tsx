@@ -31,7 +31,6 @@ const Home = () => {
     "Cars",
   ];
 
-  // 🔥 Skeleton placeholders
   const skeletonArray = Array.from({ length: 10 });
 
   const fetchImages = async (searchQuery?: string, pageNum = 1) => {
@@ -64,20 +63,20 @@ const handleSearch = () => {
 
   setPage(1);
   setActiveCategory("");
-  setCurrentSearch(query); // 🔥 important
+  setCurrentSearch(query); 
   fetchImages(query, 1);
 };
 const handleCategoryClick = (category: string) => {
   setActiveCategory(category);
   setPage(1);
-  setCurrentSearch(category); // 🔥 important
+  setCurrentSearch(category); 
   fetchImages(category, 1);
 };
 
 const handleNext = () => {
   const next = page + 1;
   setPage(next);
-  fetchImages(currentSearch, next); // empty string = fetch trending
+  fetchImages(currentSearch, next); 
 };
 
 
@@ -145,7 +144,7 @@ const handlePrev = () => {
         </div>
       </div>
 
-      {/* CATEGORY */}
+    
 
       {/* CONTENT */}
       <div className="max-w-7xl mx-auto px-6 py-6 min-h-[60vh]">
