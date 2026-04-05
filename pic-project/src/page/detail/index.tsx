@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import logo from "../../assets/png/Brand-logo.png";
+import { Tooltip } from "antd";
 
 const Detail = () => {
   const navigate = useNavigate();
@@ -64,26 +65,32 @@ const Detail = () => {
   return (
     <div className="min-h-screen bg-[#0f172a]">
       {/* HEADER */}
-      <div className="bg-[#001529] border-b border-gray-700 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6  flex items-center justify-between">
-          <div
-            className="flex items-center gap-2 cursor-pointer"
-            onClick={() => navigate("/")}
-          >
-            <img src={logo} className="w-20 h-20 object-cover" />
-            <h1 className="text-white font-semibold italic text-2xl">
-              PickaPic
-            </h1>
-          </div>
+ <div className="bg-[#001529] border-b border-gray-700 sticky top-0 z-10">
+  <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+    
+    {/* 🔙 BACK BUTTON (LEFT SIDE NOW) */}
+    <Tooltip title="Back to Images" placement="top">
+      <button
+        onClick={() => navigate("/")}
+        className="bg-[#0e2e77] hover:bg-[#031b52] text-white px-4 py-2 rounded-lg transition cursor-pointer"
+      >
+        Back
+      </button>
+    </Tooltip>
 
-          <button
-            onClick={() => navigate("/")}
-            className="bg-[#0e2e77] hover:bg-[#031b52] text-white px-4 py-2 rounded-lg transition cursor-pointer"
-          >
-          Back
-          </button>
-        </div>
-      </div>
+    {/* LOGO (RIGHT SIDE NOW) */}
+    <div
+      className="flex items-center gap-2 cursor-pointer"
+      onClick={() => navigate("/")}
+    >
+      <img src={logo} className="w-20 h-20 object-cover" />
+      <h1 className="text-white font-semibold italic text-2xl">
+        PickaPic
+      </h1>
+    </div>
+
+  </div>
+</div>
 
       {/* MAIN */}
       <div className="max-w-7xl mx-auto px-6 py-2">
@@ -108,7 +115,7 @@ const Detail = () => {
                
               </p>
 
-              <p className="text-sm">
+              <p className="font-medium">
         <span className="font-bold">Dimensions</span> : {image.imageWidth} × {image.imageHeight}
               </p>
 
@@ -118,12 +125,14 @@ const Detail = () => {
             </div>
 
             {/* DOWNLOAD */}
+            <Tooltip title="Download Image" placement="top">
             <button
               onClick={handleDownload}
               className="bg-[#0e2e77] hover:bg-[#031b52] text-white px-5 py-2 rounded-lg font-medium transition cursor-pointer"
             >
               Download
             </button>
+            </Tooltip>
           </div>
         </div>
       </div>

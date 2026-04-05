@@ -59,37 +59,40 @@ const Home = () => {
   }, []);
 
   const handleSearch = () => {
+    if (!query.trim()) return;
+
     setPage(1);
     setActiveCategory("");
-    fetchImages(query || "", 1);
+    fetchImages(query, 1);
   };
-
   const handleCategoryClick = (category: string) => {
-    setQuery(category);
     setActiveCategory(category);
     setPage(1);
     fetchImages(category, 1);
   };
 
-  const handleNext = () => {
-    const next = page + 1;
-    setPage(next);
-    fetchImages(query, next);
-  };
+const handleNext = () => {
+  const searchValue = query || activeCategory;
+  if (!searchValue.trim()) return;
 
-  const handlePrev = () => {
-    if (page === 1) return;
-    const prev = page - 1;
-    setPage(prev);
-    fetchImages(query, prev);
-  };
+  const next = page + 1;
+  setPage(next);
+  fetchImages(searchValue, next);
+};
 
+const handlePrev = () => {
+  const searchValue = query || activeCategory;
+  if (page === 1 || !searchValue.trim()) return;
+
+  const prev = page - 1;
+  setPage(prev);
+  fetchImages(searchValue, prev);
+};
   return (
     <div className="min-h-screen bg-[#0f172a]">
       {/* HEADER */}
       <div className="bg-[#001529] border-b border-gray-700 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-6 py-1 flex items-center justify-between gap-4">
-          
           {/* Logo */}
           <div className="flex items-center gap-2">
             <img src={logo} className="w-16 h-16 object-cover" />
@@ -106,42 +109,46 @@ const Home = () => {
                 placeholder="Search images..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch();
+                  }
+                }}
                 className="flex-1 bg-transparent text-white px-4 py-2 outline-none placeholder-gray-400"
               />
               <button
                 onClick={handleSearch}
-                className="bg-white px-5 py-2 text-black font-medium transition"
+                disabled={!query.trim()}
+                className="bg-white px-5 py-2 text-black font-medium transition cursor-pointer disabled:opacity-50"
               >
                 Search
               </button>
             </div>
           </div>
         </div>
-              <div className="bg-[#001529] border-b border-gray-700">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex gap-3 overflow-x-auto">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => handleCategoryClick(cat)}
-              className={`px-4 py-1 rounded-full whitespace-nowrap transition ${
-                activeCategory === cat
-                  ? "bg-blue-500 text-white"
-                  : "bg-[#0e2e77] text-white hover:bg-blue-500"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        <div className="bg-[#001529] border-b border-gray-700">
+          <div className="max-w-7xl mx-auto px-6 py-3 flex gap-3 overflow-x-auto">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => handleCategoryClick(cat)}
+                className={`cursor-pointer px-4 py-1 rounded-full whitespace-nowrap transition ${
+                  activeCategory === cat
+                    ? "bg-blue-500 text-white"
+                    : "bg-[#0e2e77] text-white hover:bg-blue-500"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
       </div>
 
       {/* CATEGORY */}
 
-
       {/* CONTENT */}
       <div className="max-w-7xl mx-auto px-6 py-6 min-h-[60vh]">
-        
         {/* GRID + FALLBACK */}
         {!loading && images.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-[50vh] text-center">
@@ -196,7 +203,7 @@ const Home = () => {
           <button
             onClick={handlePrev}
             disabled={page === 1}
-            className="px-4 py-2 rounded bg-gray-300 disabled:opacity-50"
+            className="px-4 py-2 rounded bg-gray-300 disabled:opacity-50 cursor-pointer"
           >
             Previous
           </button>
@@ -208,7 +215,7 @@ const Home = () => {
           <button
             onClick={handleNext}
             disabled={page >= totalPages}
-            className="px-4 py-2 rounded bg-blue-500 text-white disabled:opacity-50"
+            className="px-4 py-2 rounded bg-blue-500 text-white disabled:opacity-50 cursor-pointer"
           >
             Next
           </button>
