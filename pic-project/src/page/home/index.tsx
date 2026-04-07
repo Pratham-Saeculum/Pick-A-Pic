@@ -15,7 +15,7 @@ const Home = () => {
   const [currentSearch, setCurrentSearch] = useState("");
 
   const navigate = useNavigate();
-  const apiKey = import.meta.env.VITE_PIXABAY_API_KEY;
+  const apiKey = import.meta.env.VITE_PEXELS_API_KEY;
 
   const categories = [
     "Nature",
@@ -38,14 +38,18 @@ const Home = () => {
       setLoading(true);
 
       const url = searchQuery
-        ? `https://pixabay.com/api/?key=${apiKey}&q=${searchQuery}&page=${pageNum}&per_page=${perPage}`
-        : `https://pixabay.com/api/?key=${apiKey}&page=${pageNum}&per_page=${perPage}`;
+        ? `https://api.pexels.com/v1/search?query=${searchQuery}&page=${pageNum}&per_page=${perPage}`
+        : `https://api.pexels.com/v1/curated?page=${pageNum}&per_page=${perPage}`;
 
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        headers: {
+          Authorization: apiKey, 
+        },
+      });
       const data = await res.json();
 
-      setImages(data.hits || []);
-      setTotalPages(Math.ceil((data.totalHits || 0) / perPage));
+      setImages(data.photos || []);
+      setTotalPages(Math.ceil((data.total_results || 0) / perPage));
     } catch (error) {
       console.error(error);
       setImages([]);
@@ -58,35 +62,33 @@ const Home = () => {
     fetchImages("", 1);
   }, []);
 
-const handleSearch = () => {
-  if (!query.trim()) return;
+  const handleSearch = () => {
+    if (!query.trim()) return;
 
-  setPage(1);
-  setActiveCategory("");
-  setCurrentSearch(query); 
-  fetchImages(query, 1);
-};
-const handleCategoryClick = (category: string) => {
-  setActiveCategory(category);
-  setPage(1);
-  setCurrentSearch(category); 
-  fetchImages(category, 1);
-};
+    setPage(1);
+    setActiveCategory("");
+    setCurrentSearch(query);
+    fetchImages(query, 1);
+  };
+  const handleCategoryClick = (category: string) => {
+    setActiveCategory(category);
+    setPage(1);
+    setCurrentSearch(category);
+    fetchImages(category, 1);
+  };
 
-const handleNext = () => {
-  const next = page + 1;
-  setPage(next);
-  fetchImages(currentSearch, next); 
-};
+  const handleNext = () => {
+    const next = page + 1;
+    setPage(next);
+    fetchImages(currentSearch, next);
+  };
 
-
-
-const handlePrev = () => {
-  if (page === 1) return;
-  const prev = page - 1;
-  setPage(prev);
-  fetchImages(currentSearch, prev);
-};
+  const handlePrev = () => {
+    if (page === 1) return;
+    const prev = page - 1;
+    setPage(prev);
+    fetchImages(currentSearch, prev);
+  };
   return (
     <div className="min-h-screen bg-[#0f172a]">
       {/* HEADER */}
@@ -144,8 +146,6 @@ const handlePrev = () => {
         </div>
       </div>
 
-    
-
       {/* CONTENT */}
       <div className="max-w-7xl mx-auto px-6 py-6 min-h-[60vh]">
         {/* GRID + FALLBACK */}
@@ -189,8 +189,13 @@ const handlePrev = () => {
                     className="bg-white rounded-xl overflow-hidden shadow hover:scale-105 transition cursor-pointer"
                   >
                     <img
-                      src={img.webformatURL}
+                      src={img.src.medium} 
                       className="w-full h-48 object-cover"
+                      loading="lazy"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src =
+                          "https://placehold.co/400x300/1e293b/white?text=Image+Unavailable";
+                      }}
                     />
                   </div>
                 ))}
